@@ -20,7 +20,6 @@ class Settings:
     def from_env(cls) -> "Settings":
         port_value = os.getenv("PORT")
         token = os.getenv("INTERNAL_TOKEN")
-        data_dir_value = os.getenv("DATA_DIR")
 
         try:
             port = int(port_value) if port_value is not None else 0
@@ -30,9 +29,9 @@ class Settings:
             raise ConfigError("PORT is required and must be a valid port (1-65535).")
         if token is None or not token.strip():
             raise ConfigError("INTERNAL_TOKEN is required.")
+        data_dir_value = os.getenv("DATA_DIR")
         if data_dir_value is None or not data_dir_value.strip():
             raise ConfigError("DATA_DIR is required.")
-
         data_dir = Path(data_dir_value)
         data_dir.mkdir(parents=True, exist_ok=True)
         return cls(port=port, internal_token=token, data_dir=data_dir)

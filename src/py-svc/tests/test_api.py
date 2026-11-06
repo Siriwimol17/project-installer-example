@@ -3,8 +3,16 @@ from pathlib import Path
 import pytest
 from fastapi.testclient import TestClient
 
-from app.config import Settings
+from app.config import ConfigError, Settings
 from app.lifecycle import create_app
+
+
+def test_data_dir_is_required(monkeypatch: pytest.MonkeyPatch):
+    monkeypatch.setenv("PORT", "5102")
+    monkeypatch.setenv("INTERNAL_TOKEN", "dev-token")
+    monkeypatch.delenv("DATA_DIR", raising=False)
+    with pytest.raises(ConfigError, match="^DATA_DIR is required\\.$"):
+        Settings.from_env()
 
 
 @pytest.fixture
